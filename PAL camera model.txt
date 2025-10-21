@@ -1,0 +1,35 @@
+    void spaceToPlane(const Eigen::Vector3d& P, Eigen::Vector2d& p) const
+    {
+        double theta = acos(P(2) / P.norm());
+        double phi = atan2(P(1), P(0));
+
+        double l1 = mParameters.l1();
+        double l2 = mParameters.l2();
+        double l3 = mParameters.l3();
+        double i1 = mParameters.i1();
+        double i2 = mParameters.i2();
+        double i3 = mParameters.i3();
+        double i4 = mParameters.i4();
+
+        double m1 = mParameters.m1();
+        double m2 = mParameters.m2();
+        double m3 = mParameters.m3();
+        double j1 = mParameters.j1();
+        double j2 = mParameters.j2();
+        double j3 = mParameters.j3();
+        double j4 = mParameters.j4();
+
+        double theta_kh = theta-mParameters.kh();
+        double th2 = theta_kh * theta_kh;
+        double th3 = theta_kh * th2;
+        double th5 = th3 * th2;
+        double th7 = th5 * th2;
+        double th9 = th7 * th2;
+        double th11 = th9 * th2;
+
+        double r_val = theta_kh + mParameters.k2() * th3 + mParameters.k3() * th5
+                + mParameters.k4() * th7 + mParameters.k5() * th9 + mParameters.k6() * th11;   //5 radial distortion terms 
+
+        p << mParameters.mu() * r_val * cos(phi) + mParameters.u0(),
+                mParameters.mv() * r_val * sin(phi) + mParameters.v0();
+    }
